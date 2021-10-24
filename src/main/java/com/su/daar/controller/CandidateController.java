@@ -62,63 +62,64 @@ public class CandidateController {
     public ResponseEntity<String> uploadToLocalFileSystem(
 			@RequestParam("file") MultipartFile file,
 			@RequestParam("name") String name, 
-            @RequestParam("email") String email, 
+            		@RequestParam("email") String email, 
 			@RequestParam("exp") int exp,
-			@RequestParam("pos") String pos ) {
+			@RequestParam("pos") String pos ) 
+    {
 
         System.out.println("calling upload");
 
         Date d = new Date();
         String id = Candidate.idGen(name,d);
-		String fileName = "CV"+name.replace(' ', '_')+"_"+id;
 
-		// storing a copy of the pdf file
-		Path path = Paths.get(fileName);
-		try {
-			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			e.printStackTrace();
+	// storing a copy of the pdf file
+	    
+	Path path = Paths.get("CV"+name.replace(' ', '_')+"_"+id);
+	try {
+		Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+	} catch (IOException e) {
+		e.printStackTrace();
+    		return new ResponseEntity<>(
+			"There was a problem uploading the CV. Accepted formats are .pdf and .doc ", 
+			HttpStatus.BAD_REQUEST
+    		);
+	}
+		
+	//parsing the pdf file
 
-            return new ResponseEntity<>(
-                "There was a problem uploading the CV. Accepted formats are .pdf and .doc ", 
-                HttpStatus.BAD_REQUEST
-            );
-		}
+	File pdfFile = new File(fileName);
 
-		File pdfFile = new File(fileName);
+	// example code from https://stackoverflow.com/questions/23813727/how-to-extract-text-from-a-pdf-file-with-apache-pdfbox
+	PDDocument doc;
+	try {
+		doc = PDDocument.load(pdfFile);
+		String content = (new PDFTextStripper()).getText(doc);
+		System.out.print(content);
 
-		//parsing the pdf file
-		// example code from https://stackoverflow.com/questions/23813727/how-to-extract-text-from-a-pdf-file-with-apache-pdfbox
-		PDDocument doc;
-		try {
-			doc = PDDocument.load(pdfFile);
-			String content = (new PDFTextStripper()).getText(doc);
-			System.out.print(content);
-
-            // indexing
-		    service.index(new Candidate(
-                id, 
-                name, 
-                email, 
-                content, 
-                exp, 
-                Position.valueOf(pos), 
-                d
-            ));
-
-		    return new ResponseEntity<>(
-			    "CV uploaded successfully", HttpStatus.OK);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// indexing
+		service.index(new Candidate(
+			id, 
+			name, 
+			email, 
+			content, 
+			exp, 
+			Position.valueOf(pos), 
+			d
+		 ));
 
 		return new ResponseEntity<>(
-			"There was a problem uploading the CV. Please try again ", HttpStatus.BAD_REQUEST
-        );
+		    "CV uploaded successfully", HttpStatus.OK);
 
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+
+	return new ResponseEntity<>(
+		"There was a problem uploading the CV. Please try again ", HttpStatus.BAD_REQUEST
+        );
     }
 
+	
     /**
      * Get CV by id.
      * @param id The id of the cv
@@ -128,6 +129,7 @@ public class CandidateController {
     public Candidate getById(@PathVariable final String id) {
         return service.getById(id);
     }
+	
 
     /**
      * Searches all candidates whose CV contains the words specified in the body of the request.
@@ -138,6 +140,7 @@ public class CandidateController {
     public List<Candidate> search(@RequestBody final SearchRequestDTO dto) {
         return service.search(dto);
     }
+	
 
     /**
      * Searches all candidates that fullfill the criteria defined in the body of the request and who have submitted the cv after the specified date. 
@@ -153,9 +156,5 @@ public class CandidateController {
             final Date date) {
         return service.searchCreatedSince(dto, date);
     }
-
-
-    
-
 
 }
