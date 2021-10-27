@@ -136,7 +136,7 @@ public class CandidateService {
     public Boolean index(final Candidate candidate) {
         try {
             final String candidateAsString = MAPPER.writeValueAsString(candidate);
-            System.out.println(candidateAsString);
+            //System.out.println(candidateAsString);
 
             final IndexRequest request = new IndexRequest(Indices.CANDIDATE_INDEX);
             request.id(candidate.getId());

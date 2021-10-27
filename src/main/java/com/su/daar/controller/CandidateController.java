@@ -20,8 +20,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.su.daar.document.Candidate;
+import com.su.daar.helper.CustomLogger;
 import com.su.daar.helper.Position;
 import com.su.daar.search.SearchRequestDTO;
 import com.su.daar.services.CandidateService;
@@ -40,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 
 @RestController
 @RequestMapping("/api/candidate")
@@ -67,6 +70,13 @@ public class CandidateController {
 			@RequestParam("pos") String pos ) {
 
         System.out.println("calling upload");
+        Logger loggerDev = CustomLogger.getLogger("CandidateController","springlogdev.log");
+        Logger loggerProd = CustomLogger.getLogger("CandidateController","springlogprod.log");
+
+        loggerDev.info("msg:parsing a CV debug");
+        loggerProd.info("msg:testing");
+        System.out.println("after logging");
+
 
         Date d = new Date();  // timestamp
         String id = Candidate.idGen(name,d);  // each new cv has a unique id 
@@ -96,7 +106,7 @@ public class CandidateController {
 		try {
 			doc = PDDocument.load(pdfFile);
 			String content = (new PDFTextStripper()).getText(doc);
-			System.out.print(content);
+			//System.out.print(content);
 
             // indexing
 		    service.index(new Candidate(
