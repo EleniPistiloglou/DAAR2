@@ -13,6 +13,7 @@
 package com.su.daar.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import com.su.daar.document.Candidate;
 import com.su.daar.helper.CustomLogger;
@@ -30,6 +32,8 @@ import com.su.daar.services.CandidateService;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -41,7 +45,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartFile;  
 
 
 @RestController
@@ -49,10 +53,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class CandidateController {
 
     private final CandidateService service;
+    private Logger loggerDev;
+    private Logger loggerProd;
 
     @Autowired
     public CandidateController(CandidateService service) {
         this.service = service;
+        this.loggerDev = CustomLogger.getLogger("CandidateController","springlogdev.log");
+        this.loggerProd = CustomLogger.getLogger("CandidateController","springlogprod.log");
     }
 
 
@@ -63,73 +71,138 @@ public class CandidateController {
 	 */
     @PostMapping(value="/upload", consumes = "multipart/form-data")
     public ResponseEntity<String> uploadToLocalFileSystem(
-			@RequestParam("file") MultipartFile file,
-			@RequestParam("name") String name, 
-            @RequestParam("email") String email, 
-			@RequestParam("exp") int exp,
-			@RequestParam("pos") String pos ) {
+			@RequestParam("file") MultipartFile file,  // a .pdf or .doc CV 
+			@RequestParam("name") String name,   // candidate name
+            @RequestParam("email") String email,  // email address of candidate
+			@RequestParam("exp") int exp,    // years of experience of candidate
+			@RequestParam("pos") String pos   // position they are applying for
+    ) {
+        System.out.println(file.getOriginalFilename());
+        // recognise .pdf extension
+        if( Pattern.compile("(\\w)+.pdf").matcher(file.getOriginalFilename()).matches() ) {
 
-        System.out.println("calling upload");
-        Logger loggerDev = CustomLogger.getLogger("CandidateController","springlogdev.log");
-        Logger loggerProd = CustomLogger.getLogger("CandidateController","springlogprod.log");
+            Date d = new Date();  // timestamp
+            String id = Candidate.idGen(name,d);  // each new cv has a unique id 
+            // a cleaning is necessary before storing a new cv so that there are no more than one cvs for each candidate
+            // service.clean(name); // cleaning will be available with the next version
+            
+            String fileName = "CV"+name.replace(' ', '_')+"_"+id;
 
-        loggerDev.info("msg:parsing a CV debug");
-        loggerProd.info("msg:testing");
-        System.out.println("after logging");
+            // storing a copy of the pdf file
+            Path path = Paths.get(fileName);
+            try {
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(
+                    "There was a problem uploading the CV.", 
+                    HttpStatus.BAD_REQUEST
+                );
+            }
 
+            File pdfFile = new File(fileName);
 
-        Date d = new Date();  // timestamp
-        String id = Candidate.idGen(name,d);  // each new cv has a unique id 
-        // a cleaning is necessary before storing a new cv so that there are no more than one cvs for each candidate
-        // service.clean(name);
-        
-        String fileName = "CV"+name.replace(' ', '_')+"_"+id;
+            //parsing the pdf file
+            // example code from https://stackoverflow.com/questions/23813727/how-to-extract-text-from-a-pdf-file-with-apache-pdfbox
+            PDDocument doc;
+            try {
+                doc = PDDocument.load(pdfFile);
+                String content = (new PDFTextStripper()).getText(doc);
+                //System.out.print(content);
 
-		// storing a copy of the pdf file
-		Path path = Paths.get(fileName);
-		try {
-			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			e.printStackTrace();
+                // indexing
+                service.index(new Candidate(
+                    id, 
+                    name, 
+                    email, 
+                    content, 
+                    exp, 
+                    Position.valueOf(pos), 
+                    d
+                ));
 
+                return new ResponseEntity<>(
+                    "CV uploaded successfully", HttpStatus.OK);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(
+                    "There was a problem uploading the CV.", 
+                    HttpStatus.BAD_REQUEST
+                );
+            }
+        }
+
+        // recognise .doc extension
+        else if (Pattern.compile("(\\w)+.doc").matcher(file.getOriginalFilename()).matches() ){
+
+            Date d = new Date();  // timestamp
+            String id = Candidate.idGen(name,d);  // each new cv has a unique id 
+            // a cleaning is necessary before storing a new cv so that there are no more than one cvs for each candidate
+            // service.clean(name); // cleaning will be available with the next version
+            
+            String fileName = "CV"+name.replace(' ', '_')+"_"+id;
+
+            // storing a copy of the pdf file
+            Path path = Paths.get(fileName);
+            try {
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(
+                    "There was a problem uploading the CV.", 
+                    HttpStatus.BAD_REQUEST
+                );
+            }
+
+            //parsing the doc file
+            try {
+               /* InputStream fileInputStream;
+                fileInputStream = file.getInputStream();
+                int nbrBytes = fileInputStream.available();
+                byte[] buffer = new byte[nbrBytes];
+                fileInputStream.read(buffer);
+                String content = new String(buffer);
+                fileInputStream.close();*/
+                
+                WordExtractor extractor = null;
+                File docFile = new File(fileName);
+                FileInputStream fis = new FileInputStream(docFile.getAbsolutePath());
+                HWPFDocument document = new HWPFDocument(fis);
+                extractor = new WordExtractor(document);
+                String content = extractor.getText();
+
+                System.out.println(content);
+
+                // indexing
+                service.index(new Candidate(
+                    id, 
+                    name, 
+                    email, 
+                    content, 
+                    exp, 
+                    Position.valueOf(pos), 
+                    d
+                ));
+
+                return new ResponseEntity<>(
+                    "CV uploaded successfully", HttpStatus.OK);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(
+                    "There was a problem uploading the CV.", 
+                    HttpStatus.BAD_REQUEST
+                );
+            }
+        }
+
+        // not supported format
+        else{
             return new ResponseEntity<>(
-                "There was a problem uploading the CV. Accepted formats are .pdf and .doc ", 
-                HttpStatus.BAD_REQUEST
-            );
-		}
-
-		File pdfFile = new File(fileName);
-
-		//parsing the pdf file
-		// example code from https://stackoverflow.com/questions/23813727/how-to-extract-text-from-a-pdf-file-with-apache-pdfbox
-		PDDocument doc;
-		try {
-			doc = PDDocument.load(pdfFile);
-			String content = (new PDFTextStripper()).getText(doc);
-			//System.out.print(content);
-
-            // indexing
-		    service.index(new Candidate(
-                id, 
-                name, 
-                email, 
-                content, 
-                exp, 
-                Position.valueOf(pos), 
-                d
-            ));
-
-		    return new ResponseEntity<>(
-			    "CV uploaded successfully", HttpStatus.OK);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return new ResponseEntity<>(
-			"There was a problem uploading the CV. Please try again ", HttpStatus.BAD_REQUEST
-        );
-
+                "Not supported format. Accepted formats are .pdf and .doc", HttpStatus.BAD_REQUEST
+            ); 
+        }
     }
 
     /**
