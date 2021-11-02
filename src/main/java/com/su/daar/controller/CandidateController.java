@@ -16,21 +16,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import com.su.daar.document.Candidate;
+import com.su.daar.helper.AcceptedCvFormats;
 import com.su.daar.helper.CustomLogger;
 import com.su.daar.helper.Position;
 import com.su.daar.search.SearchRequestDTO;
 import com.su.daar.services.CandidateService;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
@@ -59,14 +63,15 @@ public class CandidateController {
     @Autowired
     public CandidateController(CandidateService service) {
         this.service = service;
+        // the second argument is the name of the file where the logs will be stored
         this.loggerDev = CustomLogger.getLogger("CandidateController","springlogdev.log");
         this.loggerProd = CustomLogger.getLogger("CandidateController","springlogprod.log");
     }
 
 
     /**
-	 * Extracts the text content of an uploaded pdf file and sends an indexing request.
-	 * @param file The pdf file to parse
+	 * Extracts and indexes the text content of an uploaded file. 
+	 * @param file The file to parse
      * @return An http response indicating the success of the indexing.
 	 */
     @PostMapping(value="/upload", consumes = "multipart/form-data")
@@ -77,38 +82,36 @@ public class CandidateController {
 			@RequestParam("exp") int exp,    // years of experience of candidate
 			@RequestParam("pos") String pos   // position they are applying for
     ) {
-        System.out.println(file.getOriginalFilename());
-        // recognise .pdf extension
-        if( Pattern.compile("(\\w)+.pdf").matcher(file.getOriginalFilename()).matches() ) {
 
+        Optional<AcceptedCvFormats> format = Arrays.asList(AcceptedCvFormats.values())
+            .stream()
+            .filter( f -> 
+                Pattern.compile("(\\w)*"+f.toString()).matcher(file.getOriginalFilename()).matches()
+            ).findFirst();
+
+        if(format.isPresent()){
             Date d = new Date();  // timestamp
             String id = Candidate.idGen(name,d);  // each new cv has a unique id 
             // a cleaning is necessary before storing a new cv so that there are no more than one cvs for each candidate
             // service.clean(name); // cleaning will be available with the next version
             
             String fileName = "CV"+name.replace(' ', '_')+"_"+id;
-
-            // storing a copy of the pdf file
-            Path path = Paths.get(fileName);
+            
             try {
-                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(
-                    "There was a problem uploading the CV.", 
-                    HttpStatus.BAD_REQUEST
-                );
-            }
 
-            File pdfFile = new File(fileName);
+                //copying the CV in a temporary file so that it can be converted to a String
+                Files.copy(file.getInputStream(), Paths.get(fileName), StandardCopyOption.REPLACE_EXISTING);
 
-            //parsing the pdf file
-            // example code from https://stackoverflow.com/questions/23813727/how-to-extract-text-from-a-pdf-file-with-apache-pdfbox
-            PDDocument doc;
-            try {
-                doc = PDDocument.load(pdfFile);
-                String content = (new PDFTextStripper()).getText(doc);
-                //System.out.print(content);
+                //parsing the file to create a String
+                String content = null;
+                switch(format.get()){
+                    case pdf:
+                        content = parsePDF(fileName);
+                        break;
+                    case doc:
+                        content = parseDOC(fileName);
+                        break;                   
+                }
 
                 // indexing
                 service.index(new Candidate(
@@ -121,92 +124,69 @@ public class CandidateController {
                     d
                 ));
 
-                return new ResponseEntity<>(
-                    "CV uploaded successfully", HttpStatus.OK);
+                Files.delete(Paths.get(fileName));
 
+                return new ResponseEntity<>(
+                        "CV uploaded successfully", HttpStatus.OK);
+
+                        
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                loggerDev.log(Level.SEVERE,""+e);
                 return new ResponseEntity<>(
                     "There was a problem uploading the CV.", 
                     HttpStatus.BAD_REQUEST
                 );
-            }
-        }
+            } 
 
-        // recognise .doc extension
-        else if (Pattern.compile("(\\w)+.doc").matcher(file.getOriginalFilename()).matches() ){
+        }else{
 
-            Date d = new Date();  // timestamp
-            String id = Candidate.idGen(name,d);  // each new cv has a unique id 
-            // a cleaning is necessary before storing a new cv so that there are no more than one cvs for each candidate
-            // service.clean(name); // cleaning will be available with the next version
-            
-            String fileName = "CV"+name.replace(' ', '_')+"_"+id;
-
-            // storing a copy of the pdf file
-            Path path = Paths.get(fileName);
-            try {
-                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(
-                    "There was a problem uploading the CV.", 
-                    HttpStatus.BAD_REQUEST
-                );
-            }
-
-            //parsing the doc file
-            try {
-               /* InputStream fileInputStream;
-                fileInputStream = file.getInputStream();
-                int nbrBytes = fileInputStream.available();
-                byte[] buffer = new byte[nbrBytes];
-                fileInputStream.read(buffer);
-                String content = new String(buffer);
-                fileInputStream.close();*/
-                
-                WordExtractor extractor = null;
-                File docFile = new File(fileName);
-                FileInputStream fis = new FileInputStream(docFile.getAbsolutePath());
-                HWPFDocument document = new HWPFDocument(fis);
-                extractor = new WordExtractor(document);
-                String content = extractor.getText();
-
-                System.out.println(content);
-
-                // indexing
-                service.index(new Candidate(
-                    id, 
-                    name, 
-                    email, 
-                    content, 
-                    exp, 
-                    Position.valueOf(pos), 
-                    d
-                ));
-
-                return new ResponseEntity<>(
-                    "CV uploaded successfully", HttpStatus.OK);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(
-                    "There was a problem uploading the CV.", 
-                    HttpStatus.BAD_REQUEST
-                );
-            }
-        }
-
-        // not supported format
-        else{
             return new ResponseEntity<>(
                 "Not supported format. Accepted formats are .pdf and .doc", HttpStatus.BAD_REQUEST
             ); 
+
         }
     }
 
+
     /**
-     * Get CV by id.
+     * Extracts the useful text of a pdf file.
+     * example code from https://stackoverflow.com/questions/23813727/how-to-extract-text-from-a-pdf-file-with-apache-pdfbox
+     * @param fileName The name of the file to parse
+     * @return The text of the file
+     * @throws IOException
+     * @throws InvalidPasswordException
+     */
+    private String parsePDF(String fileName) throws InvalidPasswordException, IOException {
+        PDDocument doc;
+        File pdfFile = new File(fileName);
+        doc = PDDocument.load(pdfFile);
+        String content = (new PDFTextStripper()).getText(doc);
+        return content;
+    }
+
+
+    /**
+     * Extracts the useful text of a .doc file.
+     * Example code taken from https://stackoverflow.com/questions/7102511/how-read-doc-or-docx-file-in-java
+     * @param fileName The name of the file to parse
+     * @return The text of the file
+     * @throws IOException
+     */
+    private String parseDOC(String fileName) throws IOException {
+        WordExtractor extractor = null;
+        File docFile = new File(fileName);
+        FileInputStream fis = new FileInputStream(docFile.getAbsolutePath());
+        HWPFDocument document = new HWPFDocument(fis);
+        extractor = new WordExtractor(document);
+        String content = extractor.getText();
+        extractor.close();
+        return content;
+    }
+
+
+    /**
+     * Get CV by id from the candidate index in ES.
      * @param id The id of the cv
      * @return Content of cv
      */
@@ -252,7 +232,5 @@ public class CandidateController {
             final Date date) {
         return service.searchCreatedSince(date);
     }
-    
-
 
 }
