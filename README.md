@@ -71,7 +71,7 @@ All attributes are mandatory.  <br />
 This is an example of a request created with Postman:  <br />
 ![alt text](https://github.com/EleniPistiloglou/DAAR2/blob/main/uploadrequestexample.jpg?raw=true)
 
-<br />
+<br /> 
 ### CV search 
  
  
