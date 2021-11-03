@@ -4,13 +4,13 @@ author : Eleni Pistiloglou <br />
 organisation : Sorbonne University Master of Informatics, STL track <br />
 email : eleni.pistiloglou@etu.sorbonne-universite.fr
 
-Developped for the course Développement d'Algorithmes pour des Applications Réticulaires
+Developped for the course Développement d'Algorithmes pour des Applications Réticulaires<br />
 
 ## Description
 
 This project consists of a backend created with Spring Boot for indexing the content of an uploaded CV into an elastic search database 
 and for interrogating the data base.  <br />
-It offers an API for upload and for search by keyword and/or date.  
+It offers an API for upload and for search by keyword and/or date.  <br />
 
 ## Running the application
 
@@ -18,18 +18,18 @@ To build and run the application open a command line inside the project folder a
 ```
 mvn spring-boot:run
 ```
-
+<br />
 The application runs on port `8083` in production mode by default. To run the application in development mode on port `8081`, type  <br />
 ```
 mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev
 ```
-
+<br />
 The default url where the elastic search instance is running is `http://localhost:9200`. To set a different url, type <br />
 ```
 mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev,--elasticsearch.url=###
 ```
 by replacing ### with the url.
-
+<br />
 To index log messages produced while running the application in production mode, set the file name in logstash.conf to `prodlog.log`, as in the example below, and the path to the project's folder.  
 ```
 input {
@@ -51,7 +51,7 @@ output {
 }
 ```
 
-For more info on the configuration see https://www.elastic.co/guide/en/logstash/current/configuration.html . 
+For more info on the configuration see https://www.elastic.co/guide/en/logstash/current/configuration.html . <br />
 
 ## API
 
@@ -74,16 +74,16 @@ This is an example of a request created with Postman:  <br />
 ### CV search 
  
 * **By id**
-
+<br />
 To retrieve a CV using its id, send a `GET` request to `localhost:8080/api/candidate/id`, where id is the id of the requested CV. 
- 
+ <br />
 * **By date**
 
 To retrieve all CVs that have been uploaded after a certain date, send the following request :  <br />
 `GET localhost:8080/api/candidate/date`  <br />
 Use the format YYYY-MM-DD for date. The results appear in descending order.  <br />
 If the date is not specified no results will be returned. 
-
+<br />
 * **By keyword**
 
 Send a `POST` request to `localhost:8080/api/candidate/search/keywords` with a json body of the following structure :  <br />
