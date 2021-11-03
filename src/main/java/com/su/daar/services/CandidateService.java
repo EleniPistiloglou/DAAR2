@@ -20,7 +20,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.su.daar.document.Candidate;
-import com.su.daar.helper.CustomLoggerProd;
 import com.su.daar.helper.Indices;
 import com.su.daar.search.SearchRequestDTO;
 import com.su.daar.search.util.SearchUtil;

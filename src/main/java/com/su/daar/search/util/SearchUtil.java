@@ -16,7 +16,6 @@ package com.su.daar.search.util;
 import java.util.Date;
 import java.util.List;
 
-import com.su.daar.helper.CustomLoggerDev;
 import com.su.daar.search.SearchRequestDTO;
 
 import org.elasticsearch.action.search.SearchRequest;
