@@ -18,8 +18,8 @@ To build and run the application open a command line inside the project folder a
 ```
 mvn spring-boot:run
 ```
-
-
+ 
+<br />
 The application runs on port `8083` in production mode by default. To run the application in development mode on port `8081`, type  
 ```
 mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev
