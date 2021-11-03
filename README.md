@@ -1,9 +1,9 @@
 # DAAR2 : CV indexing application
 
 <br />
-author : Eleni Pistiloglou <br />
-organisation : Sorbonne University Master of Informatics, STL track <br /> 
-email : eleni.pistiloglou@etu.sorbonne-universite.fr <br /> <br />
+**author : Eleni Pistiloglou <br />**
+**organisation : Sorbonne University Master of Informatics, STL track <br /> **
+**email : eleni.pistiloglou@etu.sorbonne-universite.fr <br /> <br />**
 
 Developed for the course Développement d'Algorithmes pour des Applications Réticulaires <br /> <br />
 
@@ -106,5 +106,5 @@ The second value of expRange is not mandatory. Null values are also accepted.  <
 To restrict the search on CVs uploaded after a certain date, send the request to `localhost:8083/api/candidate/searchcreatedsince/date` using the format YYYY-MM-DD for date.  <br />
 The results will appear in descending order of date.  <br />
 
-This is an example of a request created with Postman:  
+This is an example of a request created with Postman: <br /> <br />  
 ![alt text](https://github.com/EleniPistiloglou/DAAR2/blob/main/searchrequestexample.jpg?raw=true)
