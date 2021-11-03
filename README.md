@@ -1,9 +1,9 @@
 # DAAR2 : CV indexing application
 
 <br />
-**author : Eleni Pistiloglou <br />**
-**organisation : Sorbonne University Master of Informatics, STL track <br /> **
-**email : eleni.pistiloglou@etu.sorbonne-universite.fr <br /> <br />**
+**author : Eleni Pistiloglou** <br />
+**organisation : Sorbonne University Master of Informatics, STL track** <br />
+**email : eleni.pistiloglou@etu.sorbonne-universite.fr** <br /> <br />
 
 Developed for the course Développement d'Algorithmes pour des Applications Réticulaires <br /> <br />
 
@@ -83,15 +83,15 @@ To retrieve a CV using its id, send a `GET` request to `localhost:8083/api/candi
  
 * **By date**
 
-To retrieve all CVs that have been uploaded after a certain date, send the following request :  <br />
+To retrieve all CVs that have been uploaded after a certain date, send the following request : <br />
 `GET localhost:8083/api/candidate/date`  <br />
-Use the format YYYY-MM-DD for date. The results appear in descending order.  <br />
+Use the format YYYY-MM-DD for date. The results appear in descending order. <br />
 If the date is not specified no results will be returned. 
 <br />
 
 * **By keyword**
 
-Send a `POST` request to `localhost:8083/api/candidate/search/keywords` with a json body of the following structure :  <br />  <br />
+Send a `POST` request to `localhost:8083/api/candidate/search/keywords` with a json body of the following structure : <br /> <br />
 ```
 { 
   "keywords": ["software engineer"], 
