@@ -16,7 +16,7 @@ It offers an API for upload and for search by keyword and/or date.
 
 The application runs at `localhost:8080`.  <br />
 The address where the elastic search instance is running on has to be specified in application.properties file. The default is `http://localhost:9200`. 
-To index log messages produced while sending requests, set the file name in logstash.config to `springlogprod.log`, as in the example below, and the path to the project's folder.  
+To index log messages produced while sending requests, set the file name in logstash.conf to `springlogprod.log`, as in the example below, and the path to the project's folder.  
 ```
 input {
   file {
