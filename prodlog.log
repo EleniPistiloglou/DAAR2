@@ -1,0 +1,3 @@
+2021-11-03 ERROR - Trying to delete file while in use : [Ljava.lang.StackTraceElement;@3310b539
+2021-11-03 ERROR - Trying to delete file while in use : java.nio.file.FileSystemException: CVsthmtshhhhh_-852799133-420312907: Δεν ήταν δυνατή η προσπέλαση του αρχείου από τη διεργασία, επειδή χρησιμοποιείται ήδη από κάποια άλλη διεργασία
+2021-11-03 ERROR - Trying to delete file while in use : java.nio.file.FileSystemException: CVsthmtshhhhh_-852799133-419600484: Δεν ήταν δυνατή η προσπέλαση του αρχείου από τη διεργασία, επειδή χρησιμοποιείται ήδη από κάποια άλλη διεργασία

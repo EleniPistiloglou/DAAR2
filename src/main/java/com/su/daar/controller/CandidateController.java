@@ -23,14 +23,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import com.su.daar.document.Candidate;
 import com.su.daar.helper.AcceptedCvFormats;
-import com.su.daar.helper.CustomLoggerDev;
-import com.su.daar.helper.CustomLoggerProd;
 import com.su.daar.helper.Position;
 import com.su.daar.search.SearchRequestDTO;
 import com.su.daar.services.CandidateService;
@@ -53,21 +49,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;  
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @RestController
 @RequestMapping("/api/candidate")
 public class CandidateController {
 
     private final CandidateService service;
-    private Logger loggerDev;
-    private Logger loggerProd;
+    private static final Logger LOG = LoggerFactory.getLogger(CandidateController.class);
+
 
     @Autowired
     public CandidateController(CandidateService service) {
         this.service = service;
-        // the second argument is the name of the file where the logs will be stored
-        this.loggerDev = CustomLoggerDev.getLogger("CandidateController","springlogdev.log");
-        this.loggerProd = CustomLoggerProd.getLogger("CandidateController","springlogprod.log");
     }
 
 
@@ -92,7 +88,7 @@ public class CandidateController {
             );
         }
 
-        loggerDev.log(Level.INFO,"uploading CV : "+file.getOriginalFilename()+", "+name+", "+email+", "+exp+", "+pos);
+        LOG.info("uploading CV : "+file.getOriginalFilename()+", "+name+", "+email+", "+exp+", "+pos);
 
         Optional<AcceptedCvFormats> format = Arrays.asList(AcceptedCvFormats.values())
             .stream()
@@ -138,7 +134,7 @@ public class CandidateController {
                 try{
                     Files.delete(Paths.get(fileName));
                 }catch(Exception e){
-                    loggerProd.log(Level.SEVERE,"Trying to delete file while in use : "+e.getStackTrace());
+                    LOG.error("Trying to delete file while in use : "+e);
                     //TODO:
                     // create a method that deletes all temporary files regularly if necessary
                 }
@@ -147,7 +143,7 @@ public class CandidateController {
                         "CV uploaded successfully", HttpStatus.OK);
                         
             } catch (IOException e) {
-                loggerProd.log(Level.SEVERE,"IOException : "+e.getStackTrace());
+                LOG.error("IOException : "+e);
                 return new ResponseEntity<>(
                     "There was a problem uploading the CV.", 
                     HttpStatus.BAD_REQUEST

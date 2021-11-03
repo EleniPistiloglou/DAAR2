@@ -15,8 +15,6 @@ package com.su.daar.search.util;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.su.daar.helper.CustomLoggerDev;
 import com.su.daar.search.SearchRequestDTO;
@@ -28,10 +26,14 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SearchUtil {
     
     private SearchUtil() {}
-    private static Logger loggerDev=CustomLoggerDev.getLogger("SearchUtil","springlogdev.log");;
+    private static final Logger LOG = LoggerFactory.getLogger(SearchUtil.class);
+
 
     /**
      * Builds a search request.
@@ -51,7 +53,7 @@ public class SearchUtil {
 
             return request;
         } catch (final Exception e) {
-            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
+            LOG.error(""+e);
             return null;
         }
     }
@@ -72,7 +74,7 @@ public class SearchUtil {
 
             return request;
         } catch (final Exception e) {
-            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
+            LOG.error(""+e);
             return null;
         }
     }
@@ -104,7 +106,7 @@ public class SearchUtil {
             return request;
 
         } catch (final Exception e) {
-            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
+            LOG.error(""+e);
             return null;
         }
     }

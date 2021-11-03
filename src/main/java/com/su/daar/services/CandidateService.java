@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.su.daar.document.Candidate;
@@ -41,22 +39,23 @@ import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 @Service
 public class CandidateService {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    //private static final Logger LOG = LoggerFactory.getLogger(CandidateService.class);
-    private Logger loggerDev;
-    private Logger loggerProd;
-
+    private static final Logger LOG = LoggerFactory.getLogger(CandidateService.class);
     private final RestHighLevelClient client;
+
 
     @Autowired
     public CandidateService(RestHighLevelClient client) {
         this.client = client;
-        this.loggerDev = CustomLoggerProd.getLogger("CandidateService","springlogdev.log");
-        this.loggerProd = CustomLoggerProd.getLogger("CandidateService","springlogprod.log");
     }
+
 
     /**
      * Search for candidates based on data provided in the {@link SearchRequestDTO} DTO. For more info take a look
@@ -74,6 +73,7 @@ public class CandidateService {
         return searchInternal(request);
     }
 
+
     /**
      * Search for candidates based on data provided in the {@link SearchRequestDTO} DTO. Matches only results indexed after the specified date.
      * @param dto Search criteria.
@@ -90,6 +90,7 @@ public class CandidateService {
         return searchInternal(request);
     }
 
+
     /**
      * Search candidates who submitted their CV after a certain date.
      * @param date Date of indexing. 
@@ -104,6 +105,7 @@ public class CandidateService {
         return searchInternal(request);
     }
 
+
     /**
      * Performs a search request and translates the result into a list of {@link Candidate} objects.
      * @param request
@@ -111,7 +113,7 @@ public class CandidateService {
      */
     private List<Candidate> searchInternal(final SearchRequest request) {
         if (request == null) {
-            loggerDev.log(Level.SEVERE,"Failed to build search request. Request body is empty");
+            LOG.warn("Failed to build search request. Request body is empty");
             return Collections.emptyList();
         }
 
@@ -128,10 +130,11 @@ public class CandidateService {
             return candidates;
             
         } catch (Exception e) {
-            loggerDev.log(Level.SEVERE,""+e);
+            LOG.error(""+e);
             return Collections.emptyList();
         }
     }
+
 
     /**
      * Indexes a CV.
@@ -150,10 +153,11 @@ public class CandidateService {
             return response != null && response.status().equals(RestStatus.OK);
 
         } catch (final Exception e) {
-            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
+            LOG.error(""+e);
             return false;
         }
     }
+
 
     /**
      * Retrieves a specific CV in the candidates' index. 
@@ -172,10 +176,11 @@ public class CandidateService {
 
             return MAPPER.readValue(documentFields.getSourceAsString(), Candidate.class);
         } catch (final Exception e) {
-            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
+            LOG.error(""+e);
             return null;
         }
     }
+
 
     //TODO
     //public void clean(String name);

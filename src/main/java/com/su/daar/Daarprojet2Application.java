@@ -4,6 +4,7 @@
  * 
  * University project developed for the master's course Developpement d'Algorithmes pour des Applications Reticulaires 
  * in Sorbonne Universite, 2021.
+ * 
  **********************************************************************************************************************/
 
 package com.su.daar;
