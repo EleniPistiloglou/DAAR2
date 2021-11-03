@@ -97,7 +97,7 @@ If the date is not specified no results will be returned.
 
 * **By keyword**
 
-Send a `POST` request to `localhost:8083/api/candidate/search/keywords` with a json body of the following structure : <br /> <br />
+Send a `POST` request to `localhost:8083/api/candidate/search/keywords` with a json body of the following structure: 
 ```
 { 
   "keywords": ["software engineer"], 
@@ -112,5 +112,5 @@ The second value of expRange is not mandatory. Null values are also accepted.  <
 To restrict the search on CVs uploaded after a certain date, send the request to `localhost:8083/api/candidate/searchcreatedsince/date` using the format YYYY-MM-DD for date.  <br />
 The results will appear in descending order of date.  <br />
 
-This is an example of a request created with Postman: <br /> <br />  
+This is an example of a request created with Postman: <br /> <br />
 ![alt text](https://github.com/EleniPistiloglou/DAAR2/blob/main/searchrequestexample.jpg?raw=true)
