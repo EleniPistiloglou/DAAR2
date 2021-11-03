@@ -93,7 +93,7 @@ public class CandidateController {
         if(format.isPresent()){
             Date d = new Date();  // timestamp
             String id = Candidate.idGen(name,d);  // each new cv has a unique id 
-            // a cleaning is necessary before storing a new cv so that there are no more than one cvs for each candidate
+            // a cleaning is necessary before storing a new CV so that there are no more than one CVs for each candidate
             // service.clean(name); // cleaning will be available with the next version
             
             String fileName = "CV"+name.replace(' ', '_')+"_"+id;
@@ -129,10 +129,8 @@ public class CandidateController {
 
                 return new ResponseEntity<>(
                         "CV uploaded successfully", HttpStatus.OK);
-
                         
             } catch (IOException e) {
-                //e.printStackTrace();
                 loggerDev.log(Level.SEVERE,""+e);
                 return new ResponseEntity<>(
                     "There was a problem uploading the CV.", 

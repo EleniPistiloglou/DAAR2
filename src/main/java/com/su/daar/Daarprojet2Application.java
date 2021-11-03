@@ -27,7 +27,9 @@ public class Daarprojet2Application {
 	 */
 	@GetMapping
 	public String uploadpage(){
-		
+
+		//TODO
+		//front end is not supported in current version and shouldn't be used for sending requests as this may produce unhandled errors. 		
 		return "<!DOCTYPE html>"+
 		"<html>"+
 		"<head>"+

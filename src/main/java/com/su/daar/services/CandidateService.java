@@ -41,7 +41,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-
 public class CandidateService {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -54,8 +53,8 @@ public class CandidateService {
     @Autowired
     public CandidateService(RestHighLevelClient client) {
         this.client = client;
-        this.loggerDev = CustomLoggerProd.getLogger("CandidateController","springlogdev.log");
-        this.loggerProd = CustomLoggerProd.getLogger("CandidateController","springlogprod.log");
+        this.loggerDev = CustomLoggerProd.getLogger("CandidateService","springlogdev.log");
+        this.loggerProd = CustomLoggerProd.getLogger("CandidateService","springlogprod.log");
     }
 
     /**
@@ -111,7 +110,7 @@ public class CandidateService {
      */
     private List<Candidate> searchInternal(final SearchRequest request) {
         if (request == null) {
-            loggerDev.log(Level.SEVERE,"Failed to build search request");
+            loggerDev.log(Level.SEVERE,"Failed to build search request. Request body is empty");
             return Collections.emptyList();
         }
 
@@ -125,8 +124,8 @@ public class CandidateService {
                         MAPPER.readValue(hit.getSourceAsString(), Candidate.class)
                 );
             }
-
             return candidates;
+            
         } catch (Exception e) {
             loggerDev.log(Level.SEVERE,""+e);
             return Collections.emptyList();
@@ -141,15 +140,14 @@ public class CandidateService {
     public Boolean index(final Candidate candidate) {
         try {
             final String candidateAsString = MAPPER.writeValueAsString(candidate);
-            //System.out.println(candidateAsString);
-
             final IndexRequest request = new IndexRequest(Indices.CANDIDATE_INDEX);
             request.id(candidate.getId());
             request.source(candidateAsString, XContentType.JSON);
-
             final IndexResponse response = client.index(request, RequestOptions.DEFAULT);
+
             //successful indexing
             return response != null && response.status().equals(RestStatus.OK);
+
         } catch (final Exception e) {
             loggerDev.log(Level.SEVERE,""+e);
             return false;

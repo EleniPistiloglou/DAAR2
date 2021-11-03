@@ -1,6 +1,7 @@
 package com.su.daar.search;
 
 public class PagedRequestDTO {
+    
     private static final int DEFAULT_SIZE = 100;
 
     private int page;

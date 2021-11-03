@@ -37,13 +37,13 @@ public class SearchUtil {
     public static SearchRequest buildSearchRequest(final String indexName,
                                                    final SearchRequestDTO dto) {
         try {
-            final int page = dto.getPage();
-            final int size = dto.getSize();
-            final int from = page <= 0 ? 0 : page * size;
+            //final int page = dto.getPage();
+            //final int size = dto.getSize();
+            //final int from = page <= 0 ? 0 : page * size;
 
             SearchSourceBuilder builder = new SearchSourceBuilder()
-                    .from(from)
-                    .size(size)
+                    //.from(from)
+                    //.size(size)
                     .postFilter(getQueryBuilder(dto));
 
             final SearchRequest request = new SearchRequest(indexName);
@@ -88,22 +88,21 @@ public class SearchUtil {
                                                    final SearchRequestDTO dto,
                                                    final Date date) {
         try {
-            final BoolQueryBuilder searchQuery = getQueryBuilder(dto);
-            final QueryBuilder dateQuery = getQueryBuilder("created", date);
 
+            final BoolQueryBuilder searchQuery = getQueryBuilder(dto); // query for specified criteria in the request body
+            final QueryBuilder dateQuery = getQueryBuilder("created", date);  // query for date
             searchQuery.must(dateQuery);
-
             SearchSourceBuilder builder = new SearchSourceBuilder()
                     .postFilter(searchQuery);
 
             //sort the CVs by date of submission
-            builder = builder.sort("created", SortOrder.ASC);
-
+            builder = builder.sort("created", SortOrder.DESC);
 
             final SearchRequest request = new SearchRequest(indexName);
             request.source(builder);
 
             return request;
+
         } catch (final Exception e) {
             e.printStackTrace();
             return null;
@@ -130,17 +129,19 @@ public class SearchUtil {
         );
 
         // add filter for experience
-        if(dto.getExpRange().get(0) != null ){
-            bq.must(
-                QueryBuilders.rangeQuery("exp")
-                .gte(dto.getExpRange().get(0))
-            );
-        }
-        if (dto.getExpRange().size() > 1 ){
-            bq.must(
-                QueryBuilders.rangeQuery("exp")
-                .lte(dto.getExpRange().get(1))
-            );
+        if (dto.getExpRange() != null){
+            if(dto.getExpRange().get(0) != null ){
+                bq.must(
+                    QueryBuilders.rangeQuery("exp")
+                    .gte(dto.getExpRange().get(0))
+                );
+            }
+            if (dto.getExpRange().size() > 1 ){
+                bq.must(
+                    QueryBuilders.rangeQuery("exp")
+                    .lte(dto.getExpRange().get(1))
+                );
+            }
         }
 
         // add filter for position
