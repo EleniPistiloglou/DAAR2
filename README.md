@@ -41,7 +41,7 @@ This is an example of a request created with Postman:  <br />
 
 To retrieve a CV using its id, send a GET request to http://localhost:8080/api/candidate/id, where id is the id of the requested CV. 
  
-* ** By date **
+* **By date**
 
 To retrieve all CVs that have been uploaded after a certain date, send the following request :  <br />
 GET http://localhost:8080/api/candidate/date  <br />
@@ -51,11 +51,13 @@ If the date is not specified no results will be returned.
 * ** By keyword **
 
 Send a POST request to http://localhost:8080/api/candidate/search/keywords with a json body of the following structure :  <br />
-{ <br />
-  "keywords": \["software engineer"\], <br />
-  "expRange": \[2,5\], <br />
-  "position": CDD <br />
-} <br />
+```
+{ 
+  "keywords": \["software engineer"\], 
+  "expRange": \[2,5\], 
+  "position": CDD 
+} 
+```
 
 None of the attributes above are mandatory, but the request has to contain a body (empty or not). <br />
 A request with empty body returns all CVs in the index. <br />
