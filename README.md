@@ -21,7 +21,7 @@ The address where the elastic search instance is running on has to be specified 
 
 ### Uploading a CV
 
-To upload a CV, a`POST` request has to be sent to `localhost:8080/api/candidate/upload` .  <br />
+To upload a CV, a `POST` request has to be sent to `localhost:8080/api/candidate/upload` .  <br />
 The request body is sent in json format and can contain the following attributes:  <br />
  - file : The CV file. Accepted formats are .pdf and .doc .  <br />
  - name* : The name of the candidate. <br />
