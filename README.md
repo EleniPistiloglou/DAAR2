@@ -85,7 +85,8 @@ This is an example of a request created with Postman:  <br />  <br />
 * **By id**
 
 To retrieve a CV using its id, send a `GET` request to `localhost:8083/api/candidate/id`, where id is the id of the requested CV. 
-<br />
+
+ <br />
  
 * **By date**
 
@@ -93,7 +94,8 @@ To retrieve all CVs that have been uploaded after a certain date, send the follo
 `GET localhost:8083/api/candidate/date`  <br />
 Use the format YYYY-MM-DD for date. The results appear in descending order. <br />
 If the date is not specified no results will be returned. 
-<br />
+
+ <br />
 
 * **By keyword**
 
