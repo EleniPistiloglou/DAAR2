@@ -14,21 +14,24 @@ It offers an API for upload and for search by keyword and/or date.  <br />
 
 ## Running the application
 
-To build and run the application open a command line inside the project folder and type the following command: <br />
+To build and run the application open a command line inside the project folder and type the following command: 
 ```
 mvn spring-boot:run
 ```
+
 <br />
 The application runs on port `8083` in production mode by default. To run the application in development mode on port `8081`, type  
 ```
 mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev
 ```
+
 <br />
 The default url where the elastic search instance is running is `http://localhost:9200`. To set a different url, type 
 ```
 mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev,--elasticsearch.url=###
 ```
 by replacing ### with the url.
+
 <br />
 To index log messages produced while running the application in production mode, set the file name in logstash.conf to `prodlog.log`, as in the example below, and the path to the project's folder.  
 ```
