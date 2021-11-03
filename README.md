@@ -1,9 +1,13 @@
 # DAAR2 : CV indexing application
 
 <br />
-__author : Eleni Pistiloglou__ <br />
-**organisation : Sorbonne University Master of Informatics, STL track** <br />
-**email : eleni.pistiloglou@etu.sorbonne-universite.fr** <br /> <br />
+**author: Eleni Pistiloglou** 
+
+**organisation: Sorbonne University Master of Informatics, STL track**
+
+**email: eleni.pistiloglou@etu.sorbonne-universite.fr** 
+
+ <br />
 
 Developed for the course Développement d'Algorithmes pour des Applications Réticulaires <br /> <br />
 
