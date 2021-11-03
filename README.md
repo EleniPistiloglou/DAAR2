@@ -45,7 +45,7 @@ To retrieve a CV using its id, send a `GET` request to `localhost:8080/api/candi
 
 To retrieve all CVs that have been uploaded after a certain date, send the following request :  <br />
 `GET localhost:8080/api/candidate/date`  <br />
-Use the format yyyy-mm-dd for date. The results appear in descending order.  <br />
+Use the format YYYY-MM-DD for date. The results appear in descending order.  <br />
 If the date is not specified no results will be returned. 
 
 * **By keyword**
@@ -55,14 +55,14 @@ Send a `POST` request to `localhost:8080/api/candidate/search/keywords` with a j
 { 
   "keywords": ["software engineer"], 
   "expRange": [2,5], 
-  "position": CDD 
+  "position": "CDD" 
 } 
 ```
 
 None of the attributes above are mandatory, but the request has to contain a body (empty or not). <br />
 A request with empty body returns all CVs in the index. <br />
 One or both values of expRange can be null.  <br />
-To restrict the search on CVs uploaded after a certain date, send the request to `localhost:8080/api/candidate/searchcreatedsince/date` using the format `yyyy-mm-dd` for date.  <br />
+To restrict the search on CVs uploaded after a certain date, send the request to `localhost:8080/api/candidate/searchcreatedsince/date` using the format YYYY-MM-DD for date.  <br />
 The results will appear in descending order of date.  <br />
 
 This is an example of a request created with Postman:  
