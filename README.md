@@ -74,9 +74,9 @@ This is an example of a request created with Postman:  <br />
 ### CV search 
  
 * **By id**
-<br />
+
 To retrieve a CV using its id, send a `GET` request to `localhost:8083/api/candidate/id`, where id is the id of the requested CV. 
- <br />
+<br />
  
 * **By date**
 
