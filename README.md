@@ -1,8 +1,8 @@
 # DAAR2 : CV indexing application
 
-* **author** : Eleni Pistiloglou <br />
+author : Eleni Pistiloglou <br />
 organisation : Sorbonne University Master of Informatics STL track <br />
-* email : eleni.pistiloglou@etu.sorbonne-universite.fr
+email : eleni.pistiloglou@etu.sorbonne-universite.fr
 
 Developped for the course Développement d'Algorithmes pour des Applications Réticulaires
 
@@ -23,11 +23,11 @@ The address where the elastic search instance is running on has to be specified 
 
 To upload a CV, a POST request has to be sent to http://localhost:8080/api/candidate/upload .  <br />
 The request body is sent in json format and can contain the following attributes:  <br />
- • file : The CV file. Accepted formats are .pdf and .doc .  <br />
- • name* : The name of the candidate. <br />
- • email* : The candidate's email address. <br />
- • exp : years of experience. <br />
- • pos : The position seeked. The value can be one of Alternance, Stage, CDD, CDI. <br />
+ - file : The CV file. Accepted formats are .pdf and .doc .  <br />
+ - name* : The name of the candidate. <br />
+ - email* : The candidate's email address. <br />
+ - exp : years of experience. <br />
+ - pos : The position seeked. The value can be one of Alternance, Stage, CDD, CDI. <br />
  
 The attributes marked with asterisc are mandatory.  <br />
 
@@ -41,14 +41,14 @@ This is an example of a request created with Postman:  <br />
 
 To retrieve a CV using its id, send a GET request to http://localhost:8080/api/candidate/id, where id is the id of the requested CV. 
  
-By date : 
+* ** By date **
 
 To retrieve all CVs that have been uploaded after a certain date, send the following request :  <br />
 GET http://localhost:8080/api/candidate/date  <br />
 Use the format yyyy-mm-dd for date. The results appear in descending order.  <br />
 If the date is not specified no results will be returned. 
 
-By keyword : 
+* ** By keyword **
 
 Send a POST request to http://localhost:8080/api/candidate/search/keywords with a json body of the following structure :  <br />
 { <br />
