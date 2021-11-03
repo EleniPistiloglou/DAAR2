@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 import com.su.daar.document.Candidate;
 import com.su.daar.helper.AcceptedCvFormats;
-import com.su.daar.helper.CustomLogger;
+import com.su.daar.helper.CustomLoggerProd;
 import com.su.daar.helper.Position;
 import com.su.daar.search.SearchRequestDTO;
 import com.su.daar.services.CandidateService;
@@ -64,8 +64,8 @@ public class CandidateController {
     public CandidateController(CandidateService service) {
         this.service = service;
         // the second argument is the name of the file where the logs will be stored
-        this.loggerDev = CustomLogger.getLogger("CandidateController","springlogdev.log");
-        this.loggerProd = CustomLogger.getLogger("CandidateController","springlogprod.log");
+        this.loggerDev = CustomLoggerProd.getLogger("CandidateController","springlogdev.log");
+        this.loggerProd = CustomLoggerProd.getLogger("CandidateController","springlogprod.log");
     }
 
 
@@ -83,6 +83,7 @@ public class CandidateController {
 			@RequestParam("pos") String pos   // position they are applying for
     ) {
 
+        loggerProd.info("testing3_11_2021");
         Optional<AcceptedCvFormats> format = Arrays.asList(AcceptedCvFormats.values())
             .stream()
             .filter( f -> 

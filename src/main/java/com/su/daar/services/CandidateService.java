@@ -16,9 +16,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.su.daar.document.Candidate;
+import com.su.daar.helper.CustomLoggerProd;
 import com.su.daar.helper.Indices;
 import com.su.daar.search.SearchRequestDTO;
 import com.su.daar.search.util.SearchUtil;
@@ -34,8 +37,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,13 +45,17 @@ import org.springframework.stereotype.Service;
 public class CandidateService {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final Logger LOG = LoggerFactory.getLogger(CandidateService.class);
+    //private static final Logger LOG = LoggerFactory.getLogger(CandidateService.class);
+    private Logger loggerDev;
+    private Logger loggerProd;
 
     private final RestHighLevelClient client;
 
     @Autowired
     public CandidateService(RestHighLevelClient client) {
         this.client = client;
+        this.loggerDev = CustomLoggerProd.getLogger("CandidateController","springlogdev.log");
+        this.loggerProd = CustomLoggerProd.getLogger("CandidateController","springlogprod.log");
     }
 
     /**
@@ -106,7 +111,7 @@ public class CandidateService {
      */
     private List<Candidate> searchInternal(final SearchRequest request) {
         if (request == null) {
-            LOG.error("Failed to build search request");
+            loggerDev.log(Level.SEVERE,"Failed to build search request");
             return Collections.emptyList();
         }
 
@@ -123,7 +128,7 @@ public class CandidateService {
 
             return candidates;
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            loggerDev.log(Level.SEVERE,""+e);
             return Collections.emptyList();
         }
     }
@@ -146,7 +151,7 @@ public class CandidateService {
             //successful indexing
             return response != null && response.status().equals(RestStatus.OK);
         } catch (final Exception e) {
-            LOG.error(e.getMessage(), e);
+            loggerDev.log(Level.SEVERE,""+e);
             return false;
         }
     }
@@ -168,7 +173,7 @@ public class CandidateService {
 
             return MAPPER.readValue(documentFields.getSourceAsString(), Candidate.class);
         } catch (final Exception e) {
-            LOG.error(e.getMessage(), e);
+            loggerDev.log(Level.SEVERE,""+e);
             return null;
         }
     }
