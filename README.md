@@ -14,7 +14,7 @@ It offers an API for upload and for search by keyword and/or date.
 
 ## Running the application
 
-To run the application one has to run the command  <br />
+The application runs at `localhost:8080`.  <br />
 The address where the elastic search instance is running on has to be specified in application.properties file. The default is `http://localhost:9200`. 
 
 ## API
@@ -24,12 +24,12 @@ The address where the elastic search instance is running on has to be specified 
 To upload a CV, a `POST` request has to be sent to `localhost:8080/api/candidate/upload` .  <br />
 The request body is sent in json format and can contain the following attributes:  <br />
  - file : The CV file. Accepted formats are .pdf and .doc .  <br />
- - name* : The name of the candidate. <br />
- - email* : The candidate's email address. <br />
+ - name : The name of the candidate. <br />
+ - email : The candidate's email address. <br />
  - exp : years of experience. <br />
  - pos : The position sought. The value can be one of `Alternance` `Stage` `CDD` `CDI`. <br />
  
-The attributes marked with asterisc are mandatory.  <br />
+All attributes are mandatory.  <br />
 
 This is an example of a request created with Postman:  <br />
 ![alt text](https://github.com/EleniPistiloglou/DAAR2/blob/main/uploadrequestexample.jpg?raw=true)
@@ -61,7 +61,7 @@ Send a `POST` request to `localhost:8080/api/candidate/search/keywords` with a j
 
 None of the attributes above are mandatory, but the request has to contain a body (empty or not). <br />
 A request with empty body returns all CVs in the index. <br />
-One or both values of expRange can be null.  <br />
+The second value of expRange is not mandatory. Null values are also accepted.  <br />
 To restrict the search on CVs uploaded after a certain date, send the request to `localhost:8080/api/candidate/searchcreatedsince/date` using the format YYYY-MM-DD for date.  <br />
 The results will appear in descending order of date.  <br />
 
