@@ -79,7 +79,8 @@ This is an example of a request created with Postman:  <br />  <br />
 <br /> 
 
 ### CV search 
- 
+
+ <br />
  
 * **By id**
 
