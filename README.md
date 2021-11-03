@@ -37,6 +37,8 @@ output {
 }
 ```
 
+For more info on the configuration see https://www.elastic.co/guide/en/logstash/current/configuration.html . 
+
 ## API
 
 ### Uploading a CV
