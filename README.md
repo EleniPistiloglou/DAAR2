@@ -1,6 +1,7 @@
 # DAAR2 : CV indexing application
 
 author : Eleni Pistiloglou
+
 organisation : Sorbonne University Master of Informatics STL track
 email : eleni.pistiloglou@etu.sorbonne-universite.fr
 
