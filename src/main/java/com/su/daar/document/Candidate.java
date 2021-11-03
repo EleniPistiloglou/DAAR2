@@ -9,6 +9,7 @@
 package com.su.daar.document;
 
 import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.su.daar.helper.Position;
 
@@ -27,6 +28,12 @@ public class Candidate {
     public static String idGen(String name, Date d){
         return ""+name.hashCode()+d.hashCode();
     }
+
+    //TODO
+    public static boolean checkEmail(String email) {
+        return true;
+    }
+
 
     //CONSTRUCTORS    
     public Candidate() {

@@ -8,6 +8,7 @@
  * This file was inspired by the tutorial "How to connect to Elasticsearch from Spring Boot Application" 
  * (https://www.youtube.com/watch?v=IiZZAu2Qtp0) acompanied by the source code 
  * available at https://github.com/liliumbosniacum/elasticsearch
+ * 
  **********************************************************************************************************************/
 
 package com.su.daar.controller;
@@ -28,6 +29,7 @@ import java.util.regex.Pattern;
 
 import com.su.daar.document.Candidate;
 import com.su.daar.helper.AcceptedCvFormats;
+import com.su.daar.helper.CustomLoggerDev;
 import com.su.daar.helper.CustomLoggerProd;
 import com.su.daar.helper.Position;
 import com.su.daar.search.SearchRequestDTO;
@@ -64,7 +66,7 @@ public class CandidateController {
     public CandidateController(CandidateService service) {
         this.service = service;
         // the second argument is the name of the file where the logs will be stored
-        this.loggerDev = CustomLoggerProd.getLogger("CandidateController","springlogdev.log");
+        this.loggerDev = CustomLoggerDev.getLogger("CandidateController","springlogdev.log");
         this.loggerProd = CustomLoggerProd.getLogger("CandidateController","springlogprod.log");
     }
 
@@ -83,7 +85,15 @@ public class CandidateController {
 			@RequestParam("pos") String pos   // position they are applying for
     ) {
 
-        loggerProd.info("testing3_11_2021");
+        if(file==null || !Candidate.checkEmail(email) || exp<0){
+            return new ResponseEntity<>(
+                "Required fields must be filled with valid values.", 
+                HttpStatus.BAD_REQUEST
+            );
+        }
+
+        loggerDev.log(Level.INFO,"uploading CV : "+file.getOriginalFilename()+", "+name+", "+email+", "+exp+", "+pos);
+
         Optional<AcceptedCvFormats> format = Arrays.asList(AcceptedCvFormats.values())
             .stream()
             .filter( f -> 
@@ -91,20 +101,20 @@ public class CandidateController {
             ).findFirst();
 
         if(format.isPresent()){
+
             Date d = new Date();  // timestamp
-            String id = Candidate.idGen(name,d);  // each new cv has a unique id 
-            // a cleaning is necessary before storing a new CV so that there are no more than one CVs for each candidate
-            // service.clean(name); // cleaning will be available with the next version
-            
+            String id = Candidate.idGen(name,d);  // each new cv has a unique id
             String fileName = "CV"+name.replace(' ', '_')+"_"+id;
-            
+            String content = ""; 
+            // a cleaning is necessary before storing a new CV so that there are no more than one CVs for each candidate
+            // service.clean(email); // cleaning will be available with the next version
+
             try {
 
                 //copying the CV in a temporary file so that it can be converted to a String
                 Files.copy(file.getInputStream(), Paths.get(fileName), StandardCopyOption.REPLACE_EXISTING);
 
                 //parsing the file to create a String
-                String content = null;
                 switch(format.get()){
                     case pdf:
                         content = parsePDF(fileName);
@@ -125,13 +135,19 @@ public class CandidateController {
                     d
                 ));
 
-                Files.delete(Paths.get(fileName));
+                try{
+                    Files.delete(Paths.get(fileName));
+                }catch(Exception e){
+                    loggerProd.log(Level.SEVERE,"Trying to delete file while in use : "+e.getStackTrace());
+                    //TODO:
+                    // create a method that deletes all temporary files regularly if necessary
+                }
 
                 return new ResponseEntity<>(
                         "CV uploaded successfully", HttpStatus.OK);
                         
             } catch (IOException e) {
-                loggerDev.log(Level.SEVERE,""+e);
+                loggerProd.log(Level.SEVERE,"IOException : "+e.getStackTrace());
                 return new ResponseEntity<>(
                     "There was a problem uploading the CV.", 
                     HttpStatus.BAD_REQUEST
@@ -160,7 +176,9 @@ public class CandidateController {
         PDDocument doc;
         File pdfFile = new File(fileName);
         doc = PDDocument.load(pdfFile);
-        String content = (new PDFTextStripper()).getText(doc);
+        PDFTextStripper extractor = new PDFTextStripper();
+        String content = extractor.getText(doc);
+        doc.close();
         return content;
     }
 

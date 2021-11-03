@@ -9,11 +9,10 @@ public class CustomLoggerProd {
 
     public static Logger getLogger(String class_, String logfilename){
 
-        //LoggerContext loggerContext = Configurator.initialize("CandidateController","log4j2.xml");
         Logger logger = Logger.getLogger(logfilename);
 
         logger.setUseParentHandlers(false);
-        logger.setLevel(Level.INFO);
+        logger.setLevel(Level.SEVERE);
 
         CustomFormatter formatter = new CustomFormatter();
         FileHandler handler;

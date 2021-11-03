@@ -8,6 +8,7 @@
  * This file was inspired by the tutorial "How to connect to Elasticsearch from Spring Boot Application" 
  * (https://www.youtube.com/watch?v=IiZZAu2Qtp0) acompanied by the source code 
  * available at https://github.com/liliumbosniacum/elasticsearch
+ * 
  **********************************************************************************************************************/
 
 package com.su.daar.services;
@@ -149,7 +150,7 @@ public class CandidateService {
             return response != null && response.status().equals(RestStatus.OK);
 
         } catch (final Exception e) {
-            loggerDev.log(Level.SEVERE,""+e);
+            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
             return false;
         }
     }
@@ -171,7 +172,7 @@ public class CandidateService {
 
             return MAPPER.readValue(documentFields.getSourceAsString(), Candidate.class);
         } catch (final Exception e) {
-            loggerDev.log(Level.SEVERE,""+e);
+            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
             return null;
         }
     }

@@ -6,11 +6,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.su.daar.helper.Position;
 
-public class SearchRequestDTO extends PagedRequestDTO {
+public class SearchRequestDTO  {
 
     private List<String> keywords;    // phrases or words to be searched in the cvContent field
     private List<Integer> expRange;    // years of experience of the candidate. Contains a min and a max value 
-    private Position position;   // position seeked by the cancicate
+    private Position position;   // position sought by the candicate
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date created;
 

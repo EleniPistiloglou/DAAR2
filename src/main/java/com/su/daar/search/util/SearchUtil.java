@@ -8,13 +8,17 @@
  * This file was inspired by the tutorial "How to connect to Elasticsearch from Spring Boot Application" 
  * (https://www.youtube.com/watch?v=IiZZAu2Qtp0) acompanied by the source code 
  * available at https://github.com/liliumbosniacum/elasticsearch
+ * 
  **********************************************************************************************************************/
 
 package com.su.daar.search.util;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.su.daar.helper.CustomLoggerDev;
 import com.su.daar.search.SearchRequestDTO;
 
 import org.elasticsearch.action.search.SearchRequest;
@@ -27,6 +31,7 @@ import org.elasticsearch.search.sort.SortOrder;
 public class SearchUtil {
     
     private SearchUtil() {}
+    private static Logger loggerDev=CustomLoggerDev.getLogger("SearchUtil","springlogdev.log");;
 
     /**
      * Builds a search request.
@@ -37,13 +42,8 @@ public class SearchUtil {
     public static SearchRequest buildSearchRequest(final String indexName,
                                                    final SearchRequestDTO dto) {
         try {
-            //final int page = dto.getPage();
-            //final int size = dto.getSize();
-            //final int from = page <= 0 ? 0 : page * size;
-
+          
             SearchSourceBuilder builder = new SearchSourceBuilder()
-                    //.from(from)
-                    //.size(size)
                     .postFilter(getQueryBuilder(dto));
 
             final SearchRequest request = new SearchRequest(indexName);
@@ -51,7 +51,7 @@ public class SearchUtil {
 
             return request;
         } catch (final Exception e) {
-            e.printStackTrace();
+            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
             return null;
         }
     }
@@ -72,7 +72,7 @@ public class SearchUtil {
 
             return request;
         } catch (final Exception e) {
-            e.printStackTrace();
+            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
             return null;
         }
     }
@@ -104,7 +104,7 @@ public class SearchUtil {
             return request;
 
         } catch (final Exception e) {
-            e.printStackTrace();
+            loggerDev.log(Level.SEVERE,""+e.getStackTrace());
             return null;
         }
     }
