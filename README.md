@@ -37,7 +37,7 @@ This is an example of a request created with Postman:  <br />
 
 ### CV search 
  
-#### By id : 
+* **By id**
 
 To retrieve a CV using its id, send a GET request to http://localhost:8080/api/candidate/id, where id is the id of the requested CV. 
  
@@ -48,7 +48,7 @@ GET http://localhost:8080/api/candidate/date  <br />
 Use the format yyyy-mm-dd for date. The results appear in descending order.  <br />
 If the date is not specified no results will be returned. 
 
-* ** By keyword **
+* **By keyword**
 
 Send a POST request to http://localhost:8080/api/candidate/search/keywords with a json body of the following structure :  <br />
 ```
@@ -62,7 +62,7 @@ Send a POST request to http://localhost:8080/api/candidate/search/keywords with 
 None of the attributes above are mandatory, but the request has to contain a body (empty or not). <br />
 A request with empty body returns all CVs in the index. <br />
 One or both values of expRange can be null.  <br />
-To restrict the search on CVs uploaded after a certain date, send the request to http://localhost:8080/api/candidate/searchcreatedsince/date using the format yyyy-mm-dd for date.  <br />
+To restrict the search on CVs uploaded after a certain date, send the request to http://localhost:8080/api/candidate/searchcreatedsince/date using the format `yyyy-mm-dd` for date.  <br />
 The results will appear in descending order of date.  <br />
 
 This is an example of a request created with Postman:  
