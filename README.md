@@ -57,7 +57,7 @@ For more info on the configuration see https://www.elastic.co/guide/en/logstash/
 
 ### Uploading a CV
 
-To upload a CV, a `POST` request has to be sent to `localhost:8080/api/candidate/upload` .  <br />
+To upload a CV, a `POST` request has to be sent to `localhost:8083/api/candidate/upload` .  <br />
 The request body is sent in json format and can contain the following attributes:  <br />
  - file : The CV file. Accepted formats are .pdf and .doc .  <br />
  - name : The name of the candidate. <br />
@@ -75,20 +75,20 @@ This is an example of a request created with Postman:  <br />
  
 * **By id**
 <br />
-To retrieve a CV using its id, send a `GET` request to `localhost:8080/api/candidate/id`, where id is the id of the requested CV. 
+To retrieve a CV using its id, send a `GET` request to `localhost:8083/api/candidate/id`, where id is the id of the requested CV. 
  <br />
  
 * **By date**
 
 To retrieve all CVs that have been uploaded after a certain date, send the following request :  <br />
-`GET localhost:8080/api/candidate/date`  <br />
+`GET localhost:8083/api/candidate/date`  <br />
 Use the format YYYY-MM-DD for date. The results appear in descending order.  <br />
 If the date is not specified no results will be returned. 
 <br />
 
 * **By keyword**
 
-Send a `POST` request to `localhost:8080/api/candidate/search/keywords` with a json body of the following structure :  <br />
+Send a `POST` request to `localhost:8083/api/candidate/search/keywords` with a json body of the following structure :  <br />
 ```
 { 
   "keywords": ["software engineer"], 
@@ -100,7 +100,7 @@ Send a `POST` request to `localhost:8080/api/candidate/search/keywords` with a j
 None of the attributes above are mandatory, but the request has to contain a body (empty or not). <br />
 A request with empty body returns all CVs in the index. <br />
 The second value of expRange is not mandatory. Null values are also accepted.  <br />
-To restrict the search on CVs uploaded after a certain date, send the request to `localhost:8080/api/candidate/searchcreatedsince/date` using the format YYYY-MM-DD for date.  <br />
+To restrict the search on CVs uploaded after a certain date, send the request to `localhost:8083/api/candidate/searchcreatedsince/date` using the format YYYY-MM-DD for date.  <br />
 The results will appear in descending order of date.  <br />
 
 This is an example of a request created with Postman:  
