@@ -38,7 +38,7 @@ This is an example of a request created with Postman:
 
 ### CV search 
  
-By id : 
+#### By id : 
 
 To retrieve a CV using its id, send a GET request to localhost:8080/api/candidate/id, where id is the id of the requested CV. 
  
