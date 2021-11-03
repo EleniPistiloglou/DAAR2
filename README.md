@@ -27,7 +27,7 @@ The request body is sent in json format and can contain the following attributes
  - name* : The name of the candidate. <br />
  - email* : The candidate's email address. <br />
  - exp : years of experience. <br />
- - pos : The position seeked. The value can be one of `Alternance` `Stage` `CDD` `CDI`. <br />
+ - pos : The position sought. The value can be one of `Alternance` `Stage` `CDD` `CDI`. <br />
  
 The attributes marked with asterisc are mandatory.  <br />
 
