@@ -4,13 +4,13 @@ author : Eleni Pistiloglou <br />
 organisation : Sorbonne University Master of Informatics, STL track <br />
 email : eleni.pistiloglou@etu.sorbonne-universite.fr
 
-Developped for the course Développement d'Algorithmes pour des Applications Réticulaires<br />
+Developped for the course Développement d'Algorithmes pour des Applications Réticulaires <br /> <br />
 
 ## Description
 
 This project consists of a backend created with Spring Boot for indexing the content of an uploaded CV into an elastic search database 
 and for interrogating the data base.  <br />
-It offers an API for upload and for search by keyword and/or date.  <br />
+It offers an API for upload and for search by keyword and/or date.  <br /> <br />
 
 ## Running the application
 
