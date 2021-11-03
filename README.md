@@ -53,8 +53,8 @@ If the date is not specified no results will be returned.
 Send a `POST` request to `localhost:8080/api/candidate/search/keywords` with a json body of the following structure :  <br />
 ```
 { 
-  "keywords": \["software engineer"\], 
-  "expRange": \[2,5\], 
+  "keywords": ["software engineer"], 
+  "expRange": [2,5], 
   "position": CDD 
 } 
 ```
