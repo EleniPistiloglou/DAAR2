@@ -68,7 +68,7 @@ The request body is sent in json format and can contain the following attributes
  
 All attributes are mandatory.  <br />
 
-This is an example of a request created with Postman:  <br />
+This is an example of a request created with Postman:  <br />  <br />
 ![alt text](https://github.com/EleniPistiloglou/DAAR2/blob/main/uploadrequestexample.jpg?raw=true)
 
 <br /> 
@@ -91,7 +91,7 @@ If the date is not specified no results will be returned.
 
 * **By keyword**
 
-Send a `POST` request to `localhost:8083/api/candidate/search/keywords` with a json body of the following structure :  <br />
+Send a `POST` request to `localhost:8083/api/candidate/search/keywords` with a json body of the following structure :  <br />  <br />
 ```
 { 
   "keywords": ["software engineer"], 
