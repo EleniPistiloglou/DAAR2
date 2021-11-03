@@ -15,7 +15,7 @@ It offers an API for upload and for search by keyword and/or date.
 ## Running the application
 
 To run the application one has to run the command 
-The elastic search instance has to run at http://localhost:9200 . 
+The address where the elastic search instance is running on has to be specified in application.properties file. The default is http://localhost:9200 . 
 
 ## API
 
