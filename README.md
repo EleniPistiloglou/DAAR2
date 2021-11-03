@@ -5,7 +5,7 @@ author : Eleni Pistiloglou <br />
 organisation : Sorbonne University Master of Informatics, STL track <br /> 
 email : eleni.pistiloglou@etu.sorbonne-universite.fr <br /> <br />
 
-Developped for the course Développement d'Algorithmes pour des Applications Réticulaires <br /> <br />
+Developed for the course Développement d'Algorithmes pour des Applications Réticulaires <br /> <br />
 
 ## Description
 
@@ -71,7 +71,7 @@ All attributes are mandatory.  <br />
 This is an example of a request created with Postman:  <br />
 ![alt text](https://github.com/EleniPistiloglou/DAAR2/blob/main/uploadrequestexample.jpg?raw=true)
 
-
+<br />
 ### CV search 
  
  
